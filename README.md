@@ -19,10 +19,10 @@ MPI_HOME=/path/to/mpi NCCL_HOME=/path/to/nccl pip install -e .
 
 ```python
 import torch.distributed as dist
-import torch_ug
+import torch_pg
 
 # Install or replace built-in MPI backend.
-torch_ug.init_mpi()
+torch_pg.init_mpi()
 
 dist.init_process_group("mpi")
 ```
@@ -31,10 +31,10 @@ dist.init_process_group("mpi")
 
 ```python
 import torch.distributed as dist
-import torch_ug
+import torch_pg
 
 # Install or replace built-in NCCL backend.
-torch_ug.init_nccl()
+torch_pg.init_nccl()
 
 os.environ["MASTER_ADDR"] = "localhost"
 os.environ["MASTER_PORT"] = "29501"
@@ -44,4 +44,4 @@ dist.init_process_group("nccl", rank=rank, world_size=world_size)
 
 ## License
 
-torch_ug is licensed under the [BSD-3-Clause License](LICENSE).
+torch_pg is licensed under the [BSD-3-Clause License](LICENSE).
