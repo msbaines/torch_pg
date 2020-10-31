@@ -21,8 +21,10 @@
 // and ncclRecv() are not supported in earlier versions.
 #if defined(NCCL_MAJOR) && (NCCL_MAJOR == 2) && defined(NCCL_MINOR) && \
     (NCCL_MINOR >= 7)
+#undef ENABLE_NCCL_P2P_SUPPORT
 #define ENABLE_NCCL_P2P_SUPPORT
 #elif defined(NCCL_MAJOR) && (NCCL_MAJOR >= 3)
+#undef ENABLE_NCCL_P2P_SUPPORT
 #define ENABLE_NCCL_P2P_SUPPORT
 #endif
 

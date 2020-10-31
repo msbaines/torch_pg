@@ -398,7 +398,7 @@ void ProcessGroupNCCL::WorkNCCL::synchronizeInternal() {
 }
 
 // Same as calling synchronize().
-bool ProcessGroupNCCL::WorkNCCL::wait() {
+bool ProcessGroupNCCL::WorkNCCL::wait(std::chrono::milliseconds timeout) {
   synchronizeInternal();
   // Always return true, because abort API is not implemented.
   return true;
@@ -975,7 +975,7 @@ std::shared_ptr<ProcessGroupNCCL::WorkNCCL> ProcessGroupNCCL::initWork(
   return std::make_shared<ProcessGroupNCCL::WorkNCCL>(devices);
 }
 
-std::vector<at::Tensor> ProcessGroupNCCL::WorkNCCL::result() const {
+std::vector<at::Tensor> ProcessGroupNCCL::WorkNCCL::result() {
   return *outputs_;
 }
 

@@ -5,6 +5,7 @@
 namespace c10d {
 
 // For alltoall split size sanity check
+#if 0
 inline void checkSplitSizes(
     const std::vector<int64_t>& split_sizes,
     const at::Tensor& tensor,
@@ -74,4 +75,5 @@ size_t computeLengthsAndOffsets(
   return offset;
 }
 
+#endif
 } // namespace c10d

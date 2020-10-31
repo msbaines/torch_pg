@@ -87,7 +87,7 @@ class ProcessGroupNCCL : public ProcessGroup {
     bool isSuccess() const override;
 
     // Same as calling synchronize() for NCCL work.
-    bool wait() override;
+    bool wait(std::chrono::milliseconds timeout = kNoTimeout) override;
 
     void abort() override;
 
@@ -114,7 +114,7 @@ class ProcessGroupNCCL : public ProcessGroup {
     // and False otherwise.
     bool timedOut();
 
-    std::vector<at::Tensor> result() const override;
+    std::vector<at::Tensor> result() override;
 
    protected:
     // The cached list of CUDA devices to operate on
