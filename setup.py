@@ -1,5 +1,7 @@
 import os
+import torch
 
+from packaging import version
 from setuptools import find_packages, setup
 from torch.utils.cpp_extension import BuildExtension, CppExtension, CUDAExtension
 
@@ -21,6 +23,10 @@ if nccl_home is None or not os.path.exists(nccl_home):
     sys.exit(1)
 
 
+torch_version = version.parse(torch.__version__)
+torch_version_defines = ["-DTORCH_MAJOR="+str(torch_version.major), "-DTORCH_MINOR="+str(torch_version.minor)]
+
+
 extensions = []
 cmdclass = {}
 
@@ -39,7 +45,7 @@ extensions = [
             os.path.join(mpi_home, "lib"),
         ],
         libraries=["mpi",],
-        extra_compile_args=["-DOMPI_SKIP_MPICXX=1"],
+        extra_compile_args=["-DOMPI_SKIP_MPICXX=1"] + torch_version_defines,
     ),
     CUDAExtension(
         name="torch_pg._CUDA",
@@ -56,7 +62,7 @@ extensions = [
             os.path.join(nccl_home, "lib"),
         ],
         libraries=["nccl",],
-        extra_compile_args=["-DENABLE_NCCL_P2P_SUPPORT"],
+        extra_compile_args=["-DENABLE_NCCL_P2P_SUPPORT"] + torch_version_defines,
     ),
 ]
 

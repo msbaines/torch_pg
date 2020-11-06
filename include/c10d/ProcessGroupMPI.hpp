@@ -88,7 +88,11 @@ class ProcessGroupMPI : public ProcessGroup {
 
     int sourceRank() const override;
 
+#if (TORCH_MAJOR >= 1) && (TORCH_MINOR >= 7)
+    bool wait(std::chrono::milliseconds timeout = kUnsetTimeout) override;
+#else
     bool wait() override;
+#endif
 
     void abort() override;
 

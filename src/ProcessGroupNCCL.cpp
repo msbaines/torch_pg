@@ -398,7 +398,11 @@ void ProcessGroupNCCL::WorkNCCL::synchronizeInternal() {
 }
 
 // Same as calling synchronize().
+#if (TORCH_MAJOR >= 1) && (TORCH_MINOR >= 7)
+bool ProcessGroupNCCL::WorkNCCL::wait(std::chrono::milliseconds /* unused */) {
+#else
 bool ProcessGroupNCCL::WorkNCCL::wait() {
+#endif
   synchronizeInternal();
   // Always return true, because abort API is not implemented.
   return true;
@@ -975,7 +979,11 @@ std::shared_ptr<ProcessGroupNCCL::WorkNCCL> ProcessGroupNCCL::initWork(
   return std::make_shared<ProcessGroupNCCL::WorkNCCL>(devices);
 }
 
+#if (TORCH_MAJOR >= 1) && (TORCH_MINOR >= 7)
+std::vector<at::Tensor> ProcessGroupNCCL::WorkNCCL::result() {
+#else
 std::vector<at::Tensor> ProcessGroupNCCL::WorkNCCL::result() const {
+#endif
   return *outputs_;
 }
 

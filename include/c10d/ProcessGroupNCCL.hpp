@@ -87,7 +87,11 @@ class ProcessGroupNCCL : public ProcessGroup {
     bool isSuccess() const override;
 
     // Same as calling synchronize() for NCCL work.
+#if (TORCH_MAJOR >= 1) && (TORCH_MINOR >= 7)
+    bool wait(std::chrono::milliseconds timeout = kUnsetTimeout) override;
+#else
     bool wait() override;
+#endif
 
     void abort() override;
 
@@ -114,7 +118,11 @@ class ProcessGroupNCCL : public ProcessGroup {
     // and False otherwise.
     bool timedOut();
 
+#if (TORCH_MAJOR >= 1) && (TORCH_MINOR >= 7)
+    std::vector<at::Tensor> result() override;
+#else
     std::vector<at::Tensor> result() const override;
+#endif
 
    protected:
     // The cached list of CUDA devices to operate on

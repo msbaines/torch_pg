@@ -142,7 +142,11 @@ int ProcessGroupMPI::AsyncWork::sourceRank() const {
   return status_.MPI_SOURCE;
 }
 
+#if (TORCH_MAJOR >= 1) && (TORCH_MINOR >= 7)
+bool ProcessGroupMPI::AsyncWork::wait(std::chrono::milliseconds /* unused */) {
+#else
 bool ProcessGroupMPI::AsyncWork::wait() {
+#endif
   if (request_ == MPI_REQUEST_NULL) {
     return true;
   }

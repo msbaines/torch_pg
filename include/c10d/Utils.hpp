@@ -4,6 +4,7 @@
 
 namespace c10d {
 
+#if (TORCH_MAJOR <= 1) && (TORCH_MINOR <= 6)
 // For alltoall split size sanity check
 inline void checkSplitSizes(
     const std::vector<int64_t>& split_sizes,
@@ -73,5 +74,7 @@ size_t computeLengthsAndOffsets(
   }
   return offset;
 }
+
+#endif /* (TORCH_MAJOR <= 1) && (TORCH_MINOR <= 6) */
 
 } // namespace c10d

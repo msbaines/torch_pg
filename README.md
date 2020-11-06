@@ -6,7 +6,7 @@ torch_pg is a collection of PyTorch [Distributed ProcessGroup Backends](https://
 
 ## Supports
 
-* tested on PyTorch 1.6.0 and NCCL 2.7.8
+* tested on PyTorch 1.6.0/1.7.0 and NCCL 2.7.8
 
 ## Installation
 
