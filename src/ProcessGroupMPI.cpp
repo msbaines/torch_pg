@@ -40,6 +40,7 @@ std::map<at::ScalarType, MPI_Datatype> mpiDatatype = {
     {at::kInt, MPI_INT},
     {at::kLong, MPI_LONG},
     {at::kShort, MPI_SHORT},
+    {at::kBool, MPI_C_BOOL},
 };
 
 // Checking CUDA-aware MPI support, currently we only support CUDA aware
