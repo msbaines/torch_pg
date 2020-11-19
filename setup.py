@@ -77,6 +77,7 @@ cmdclass["build_ext"] = BuildExtension
 setup(
     name="torch-pg",
     version="0.0.0",
+    install_requires=["packaging"],
     packages=find_packages(),
     ext_modules=extensions,
     cmdclass=cmdclass,
