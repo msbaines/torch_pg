@@ -2,7 +2,6 @@ import logging
 import os
 import torch
 
-from packaging import version
 from setuptools import find_packages, setup
 from torch.utils.cpp_extension import BuildExtension, CppExtension, CUDAExtension
 
@@ -24,8 +23,8 @@ if nccl_home is None or not os.path.exists(nccl_home):
     logging.warn("Couldn't find NCCL install dir, please set NCCL_HOME to enable NCCL build")
 
 
-torch_version = version.parse(torch.__version__)
-torch_version_defines = ["-DTORCH_MAJOR="+str(torch_version.major), "-DTORCH_MINOR="+str(torch_version.minor)]
+torch_version = torch.__version__.split('.')
+torch_version_defines = ["-DTORCH_MAJOR="+torch_version[0], "-DTORCH_MINOR="+torch_version[1]]
 
 
 extensions = []
@@ -77,7 +76,6 @@ cmdclass["build_ext"] = BuildExtension
 setup(
     name="torch-pg",
     version="0.0.0",
-    install_requires=["packaging"],
     packages=find_packages(),
     ext_modules=extensions,
     cmdclass=cmdclass,
