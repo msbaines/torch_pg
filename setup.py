@@ -1,3 +1,4 @@
+import logging
 import os
 import torch
 
@@ -19,8 +20,8 @@ if not os.path.exists(mpi_home):
 
 nccl_home = os.environ.get("NCCL_HOME")
 if nccl_home is None or not os.path.exists(nccl_home):
-    print("Couldn't find NCCL install dir, please set NCCL_HOME env variable")
-    sys.exit(1)
+    nccl_home = None
+    logging.warn("Couldn't find NCCL install dir, please set NCCL_HOME to enable NCCL build")
 
 
 torch_version = version.parse(torch.__version__)
@@ -47,24 +48,28 @@ extensions = [
         libraries=["mpi",],
         extra_compile_args=["-DOMPI_SKIP_MPICXX=1"] + torch_version_defines,
     ),
-    CUDAExtension(
-        name="torch_pg._CUDA",
-        sources=[
-            "src/CUDABindings.cpp",
-            "src/NCCLUtils.cpp",
-            "src/ProcessGroupNCCL.cpp"
-        ],
-        include_dirs=[
-            os.path.join(root_dir, "include"), 
-            os.path.join(nccl_home, "include"),
-        ],
-        library_dirs=[
-            os.path.join(nccl_home, "lib"),
-        ],
-        libraries=["nccl",],
-        extra_compile_args=["-DENABLE_NCCL_P2P_SUPPORT"] + torch_version_defines,
-    ),
 ]
+
+if nccl_home is not None:
+    extensions += [
+        CUDAExtension(
+            name="torch_pg._CUDA",
+            sources=[
+                "src/CUDABindings.cpp",
+                "src/NCCLUtils.cpp",
+                "src/ProcessGroupNCCL.cpp"
+            ],
+            include_dirs=[
+                os.path.join(root_dir, "include"),
+                os.path.join(nccl_home, "include"),
+            ],
+            library_dirs=[
+                os.path.join(nccl_home, "lib"),
+            ],
+            libraries=["nccl",],
+            extra_compile_args=["-DENABLE_NCCL_P2P_SUPPORT"] + torch_version_defines,
+        ),
+    ]
 
 cmdclass["build_ext"] = BuildExtension
 
