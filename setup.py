@@ -11,6 +11,8 @@ root_dir = os.path.dirname(os.path.abspath(__file__))
 
 mpi_home = os.environ.get("MPI_HOME")
 if mpi_home is None:
+    mpi_home = "/usr/lib/openmpi/"
+if not os.path.exists(mpi_home):
     mpi_home = "/usr/lib/x86_64-linux-gnu/openmpi/"
 if not os.path.exists(mpi_home):
     print("Couldn't find MPI install dir, please set MPI_HOME env variable")
