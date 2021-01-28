@@ -204,7 +204,7 @@ void ProcessGroupMPI::initMPIOnce() {
   });
 }
 
-std::shared_ptr<ProcessGroup> ProcessGroupMPI::createProcessGroupMPI(
+c10::intrusive_ptr<ProcessGroup> ProcessGroupMPI::createProcessGroupMPI(
     std::vector<int> ranks) {
   // Once initialization
   initMPIOnce();
@@ -243,7 +243,7 @@ std::shared_ptr<ProcessGroup> ProcessGroupMPI::createProcessGroupMPI(
   // process group instance. This is in line with the semantics of the
   // other process group types.
   if (groupComm == MPI_COMM_NULL) {
-    return std::shared_ptr<ProcessGroupMPI>();
+    return c10::intrusive_ptr<ProcessGroupMPI>();
   }
 
   return std::make_shared<ProcessGroupMPI>(rank, size, groupComm);
@@ -313,7 +313,7 @@ void ProcessGroupMPI::runLoop() {
   }
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::enqueue(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::enqueue(
     std::unique_ptr<WorkEntry> entry) {
   auto work = std::make_shared<WorkMPI>();
   std::unique_lock<std::mutex> lock(pgMutex_);
@@ -323,7 +323,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::enqueue(
   return work;
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::broadcast(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::broadcast(
     std::vector<at::Tensor>& tensors,
     const BroadcastOptions& opts) {
   checkSingleTensor(tensors);
@@ -344,7 +344,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::broadcast(
   return enqueue(std::move(entry));
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::allreduce(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::allreduce(
     std::vector<at::Tensor>& tensors,
     const AllreduceOptions& opts) {
   checkSingleTensor(tensors);
@@ -367,14 +367,14 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::allreduce(
   return enqueue(std::move(entry));
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::allreduce_coalesced(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::allreduce_coalesced(
     std::vector<at::Tensor>& tensors,
     const AllreduceCoalescedOptions& opts) {
   throw std::runtime_error(
       "allreduce_coalesced is currently not supported with MPI");
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::reduce(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::reduce(
     std::vector<at::Tensor>& tensors,
     const ReduceOptions& opts) {
   checkSingleTensor(tensors);
@@ -402,7 +402,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::reduce(
   return enqueue(std::move(entry));
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::allgather(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::allgather(
     std::vector<std::vector<at::Tensor>>& outputTensors,
     std::vector<at::Tensor>& inputTensors,
     const AllgatherOptions& opts) {
@@ -446,7 +446,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::allgather(
   return enqueue(std::move(entry));
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::allgather_coalesced(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::allgather_coalesced(
     std::vector<std::vector<at::Tensor>>& /* unused */,
     std::vector<at::Tensor>& /* unused */,
     const AllgatherOptions& /* unused */) {
@@ -454,7 +454,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::allgather_coalesced(
       "ProcessGroupMPI does not support allgather_coalesced");
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::gather(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::gather(
     std::vector<std::vector<at::Tensor>>& outputTensors,
     std::vector<at::Tensor>& inputTensors,
     const GatherOptions& opts) {
@@ -521,7 +521,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::gather(
   }
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::scatter(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::scatter(
     std::vector<at::Tensor>& outputTensors,
     std::vector<std::vector<at::Tensor>>& inputTensors,
     const ScatterOptions& opts) {
@@ -587,14 +587,14 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::scatter(
   }
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::reduce_scatter(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::reduce_scatter(
     std::vector<at::Tensor>& outputTensors,
     std::vector<std::vector<at::Tensor>>& inputTensors,
     const ReduceScatterOptions& opts) {
   throw std::runtime_error("ProcessGroupMPI does not support reduce_scatter");
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::alltoall_base(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::alltoall_base(
     at::Tensor& outputTensor,
     at::Tensor& inputTensor,
     std::vector<int64_t>& outputSplitSizes,
@@ -670,7 +670,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::alltoall_base(
     return enqueue(std::move(entry));
   }
 }
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::alltoall(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::alltoall(
     std::vector<at::Tensor>& outputTensors,
     std::vector<at::Tensor>& inputTensors,
     const AllToAllOptions& opts) {
@@ -727,7 +727,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::alltoall(
   return enqueue(std::move(entry));
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::send(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::send(
     std::vector<at::Tensor>& tensors,
     int dstRank,
     int tag) {
@@ -752,7 +752,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::send(
   return std::make_shared<AsyncWork>(tensor, request);
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::recv(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::recv(
     std::vector<at::Tensor>& tensors,
     int srcRank,
     int tag) {
@@ -777,7 +777,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::recv(
   return std::make_shared<AsyncWork>(tensor, request);
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::recvAnysource(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::recvAnysource(
     std::vector<at::Tensor>& tensors,
     int tag) {
   checkSingleTensor(tensors);
@@ -801,7 +801,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::recvAnysource(
   return std::make_shared<AsyncWork>(tensor, request);
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::barrier(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::barrier(
     const BarrierOptions& opts) {
   std::function<void(std::unique_ptr<WorkEntry>&)> runFunc =
       [this](std::unique_ptr<WorkEntry>& entry) {
@@ -813,7 +813,7 @@ std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::barrier(
   return enqueue(std::move(entry));
 }
 
-std::shared_ptr<ProcessGroup::Work> ProcessGroupMPI::allgather_base(
+c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::allgather_base(
     at::Tensor& /*unused */,
     at::Tensor& /*unused */,
     const AllgatherOptions& /*unused */) {
