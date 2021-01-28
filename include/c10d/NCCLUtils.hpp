@@ -82,11 +82,11 @@ class NCCLComm {
     }
   }
 
-  static std::shared_ptr<NCCLComm> create(
+  static c10::intrusive_ptr<NCCLComm> create(
       int numRanks,
       int rank,
       ncclUniqueId commId) {
-    auto comm = std::make_shared<NCCLComm>();
+    auto comm = c10::make_instrusive<NCCLComm>();
     C10D_NCCL_CHECK(
         ncclCommInitRank(&(comm->ncclComm_), numRanks, commId, rank));
     comm->ncclId_ = commId;
