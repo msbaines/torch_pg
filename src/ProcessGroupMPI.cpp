@@ -246,7 +246,7 @@ c10::intrusive_ptr<ProcessGroup> ProcessGroupMPI::createProcessGroupMPI(
     return c10::intrusive_ptr<ProcessGroupMPI>();
   }
 
-  return c10::make_instrusive<ProcessGroupMPI>(rank, size, groupComm);
+  return c10::make_intrusive<ProcessGroupMPI>(rank, size, groupComm);
 }
 
 ProcessGroupMPI::ProcessGroupMPI(int rank, int size, MPI_Comm pgComm)
@@ -315,7 +315,7 @@ void ProcessGroupMPI::runLoop() {
 
 c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::enqueue(
     std::unique_ptr<WorkEntry> entry) {
-  auto work = c10::make_instrusive<WorkMPI>();
+  auto work = c10::make_intrusive<WorkMPI>();
   std::unique_lock<std::mutex> lock(pgMutex_);
   queue_.push_back(std::make_tuple(std::move(entry), work));
   lock.unlock();
@@ -749,7 +749,7 @@ c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::send(
         &request));
   }
 
-  return c10::make_instrusive<AsyncWork>(tensor, request);
+  return c10::make_intrusive<AsyncWork>(tensor, request);
 }
 
 c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::recv(
@@ -774,7 +774,7 @@ c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::recv(
         &request));
   }
 
-  return c10::make_instrusive<AsyncWork>(tensor, request);
+  return c10::make_intrusive<AsyncWork>(tensor, request);
 }
 
 c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::recvAnysource(
@@ -798,7 +798,7 @@ c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::recvAnysource(
         &request));
   }
 
-  return c10::make_instrusive<AsyncWork>(tensor, request);
+  return c10::make_intrusive<AsyncWork>(tensor, request);
 }
 
 c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupMPI::barrier(

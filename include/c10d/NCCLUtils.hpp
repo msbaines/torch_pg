@@ -86,7 +86,7 @@ class NCCLComm {
       int numRanks,
       int rank,
       ncclUniqueId commId) {
-    auto comm = c10::make_instrusive<NCCLComm>();
+    auto comm = c10::make_intrusive<NCCLComm>();
     C10D_NCCL_CHECK(
         ncclCommInitRank(&(comm->ncclComm_), numRanks, commId, rank));
     comm->ncclId_ = commId;

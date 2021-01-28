@@ -247,7 +247,7 @@ ProcessGroupNCCL::WorkNCCL::WorkNCCL(const std::vector<at::Device>& devices)
   // Note: The actual events are lazily created when first recorded to with
   // DEFAULT_FLAGS = cudaEventDisableTiming.
   cudaEvents_ =
-      c10::make_instrusive<std::vector<at::cuda::CUDAEvent>>(devices.size());
+      c10::make_intrusive<std::vector<at::cuda::CUDAEvent>>(devices.size());
   ncclComms_.resize(devices.size());
 }
 
@@ -844,7 +844,7 @@ std::vector<c10::intrusive_ptr<NCCLComm>>& ProcessGroupNCCL::getNCCLComm(
     std::lock_guard<std::mutex> lock(mutex_);
     if (futureNCCLCallbackStreams_[deviceIndex] == nullptr) {
       futureNCCLCallbackStreams_[deviceIndex] =
-          c10::make_instrusive<at::cuda::CUDAStream>(at::cuda::getStreamFromPool(isHighPriorityStream_));
+          c10::make_intrusive<at::cuda::CUDAStream>(at::cuda::getStreamFromPool(isHighPriorityStream_));
     }
   }
 
@@ -976,7 +976,7 @@ std::vector<at::Tensor> flatten_for_scatter_gather(
 
 c10::intrusive_ptr<ProcessGroupNCCL::WorkNCCL> ProcessGroupNCCL::initWork(
     std::vector<at::Device> devices) {
-  return c10::make_instrusive<ProcessGroupNCCL::WorkNCCL>(devices);
+  return c10::make_intrusive<ProcessGroupNCCL::WorkNCCL>(devices);
 }
 
 #if (TORCH_MAJOR >= 1) && (TORCH_MINOR >= 7)
@@ -1020,7 +1020,7 @@ c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupNCCL::collective(
 
   // Store references to outputs and futureNCCLCallbackStream to be used by
   // WorkNCCL::getFuture.
-  work->outputs_ = c10::make_instrusive<std::vector<at::Tensor>>(outputs);
+  work->outputs_ = c10::make_intrusive<std::vector<at::Tensor>>(outputs);
   work->futureNCCLCallbackStreams_ = futureNCCLCallbackStreams_;
 
   at::cuda::OptionalCUDAGuard gpuGuard;
@@ -1095,7 +1095,7 @@ c10::intrusive_ptr<ProcessGroup::Work> ProcessGroupNCCL::pointToPoint(
   if (commType == NCCLCommType::RECV) {
     // Store references to outputs and futureNCCLCallbackStream to be used by
     // WorkNCCL::getFuture.
-    work->outputs_ = c10::make_instrusive<std::vector<at::Tensor>>(tensors);
+    work->outputs_ = c10::make_intrusive<std::vector<at::Tensor>>(tensors);
     work->futureNCCLCallbackStreams_ = futureNCCLCallbackStreams_;
   }
 

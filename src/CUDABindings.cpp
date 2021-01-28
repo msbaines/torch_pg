@@ -17,7 +17,7 @@ c10::intrusive_ptr<ProcessGroup> createProcessGroupNCCL(
   ProcessGroupNCCL::Options options;
   options.isHighPriorityStream = false;
   options.opTimeout = timeout;
-  return c10::make_instrusive<ProcessGroupNCCL>(store, rank, size, options);
+  return c10::make_intrusive<ProcessGroupNCCL>(store, rank, size, options);
 }
 
 } // namespacef
